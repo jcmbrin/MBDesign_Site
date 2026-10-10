@@ -29,6 +29,68 @@
     <link rel="stylesheet" href="assets/css/main.css">
     <link rel="stylesheet" href="assets/css/before-after.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.css">
+<style id="fullscreen-menu-styles">
+/* Full-viewport navigation at every screen size. */
+html { scrollbar-gutter:stable; }
+body.site-menu-open { overflow:hidden; }
+#header { z-index:10000; }
+#navmenu { position:static !important; padding:0 !important; }
+#navmenu::before { display:none !important; }
+#navmenu .site-menu-toggle {
+ display:grid !important; place-items:center; position:relative; z-index:10001;
+ box-sizing:border-box; flex:0 0 48px; width:48px; height:48px; min-width:48px; min-height:48px; padding:11px; border:1px solid #ffffff26;
+ border-radius:10px; background:#292b2d; color:#f5f5f5; cursor:pointer;
+}
+#navmenu .site-menu-toggle svg { width:24px; height:24px; }
+#navmenu > ul {
+ display:block !important; position:fixed !important; inset:0 !important;
+ box-sizing:border-box; width:100% !important; height:100vh !important; height:100dvh !important;
+ min-height:0 !important; max-height:none !important; margin:0 !important;
+ padding:max(100px,calc(env(safe-area-inset-top) + 80px)) max(24px,env(safe-area-inset-right)) max(32px,env(safe-area-inset-bottom)) max(24px,env(safe-area-inset-left)) !important;
+ overflow-y:auto; overscroll-behavior:contain; scrollbar-gutter:stable;
+ background:#202224 !important; border:0 !important; border-radius:0 !important;
+ box-shadow:none !important; z-index:10000;
+ opacity:0 !important; visibility:hidden !important; pointer-events:none;
+ transform:translateY(-14px);
+ transition:opacity .28s ease,transform .28s ease,visibility 0s linear .28s;
+}
+body.site-menu-open #navmenu > ul {
+ opacity:1 !important; visibility:visible !important; pointer-events:auto;
+ transform:translateY(0); transition:opacity .28s ease,transform .28s ease,visibility 0s;
+}
+#navmenu li { margin:0; padding:0; list-style:none; }
+#navmenu > ul > li { max-width:900px; margin:0 auto 8px; }
+#navmenu a, #navmenu .menu-disclosure {
+ box-sizing:border-box; display:flex; align-items:center; min-height:52px;
+ padding:14px 18px !important; border-radius:8px;
+ font-family:Arial,Helvetica,sans-serif; font-size:clamp(18px,2.2vw,26px) !important;
+ font-weight:500; line-height:1.35; color:#f1f1f1 !important; text-decoration:none;
+ transition:color .18s ease;
+}
+#navmenu .menu-disclosure { justify-content:space-between; gap:16px; width:100%; border:0; background:transparent; text-align:left; cursor:pointer; }
+#navmenu .menu-disclosure svg { flex-shrink:0; transition:transform .22s ease; }
+#navmenu .menu-disclosure[aria-expanded="true"] svg { transform:rotate(180deg); }
+#navmenu a:hover, #navmenu .menu-disclosure:hover { background:transparent !important; color:#26d07c !important; text-decoration:none !important; }
+#navmenu a.active, #navmenu a[aria-current="page"] { color:#26d07c !important; background:transparent !important; text-decoration:none !important; }
+#navmenu a, #navmenu .menu-disclosure { background:transparent !important; border-radius:0; }
+#navmenu .dropdown > ul {
+ display:none !important; position:static !important; inset:auto !important;
+ width:auto !important; height:auto !important; margin:6px 0 12px 18px !important;
+ padding:4px 0 4px 12px !important; border:0 !important; border-left:1px solid #505458 !important;
+ border-radius:0 !important; background:transparent !important; box-shadow:none !important;
+ opacity:1 !important; visibility:visible !important; overflow:visible;
+}
+#navmenu .dropdown.menu-expanded > ul { display:block !important; }
+#navmenu .dropdown > ul a, #navmenu .dropdown > ul .menu-disclosure { font-size:clamp(16px,1.8vw,20px) !important; }
+#navmenu :is(a,button):focus-visible { outline:2px solid #26d07c; outline-offset:-2px; }
+@media (max-width:480px) {
+ #navmenu > ul { padding-left:16px !important; padding-right:16px !important; }
+ #navmenu a, #navmenu .menu-disclosure { padding:12px 14px !important; }
+}
+@media (prefers-reduced-motion:reduce) {
+ #navmenu > ul, #navmenu a, #navmenu .menu-disclosure, #navmenu .menu-disclosure svg { transition:none !important; transform:none !important; }
+}
+</style>
 </head>
 
 <body class="contact-page">
@@ -36,17 +98,28 @@
         <div class="container-fluid position-relative d-flex justify-content-between align-items-center container-xl"><a class="d-flex align-items-center logo" href="index.html"><img class="img-fluid ms-0 ps-0 me-0 pe-0" width="150" height="150" src="assets/img/mb_brand_logo_white.svg" style="width: 46px;">
                 <h1 class="sitename">MB Design</h1>
             </a>
-            <nav id="navmenu" class="navmenu">
-                <ul>
-                    <li><a href="index.html">Home</a></li>
-                    <li><a href="about.html">About</a></li>
-                    <li><a href="portfolio.html">Portfolio</a></li>
-                    <li><a href="resume.html">Resume</a></li>
-                    <li><a class="active" href="#">Contact</a></li>
-                </ul><svg class="bi bi-list d-xl-none mobile-nav-toggle" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 16 16">
-                    <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5"></path>
-                </svg>
-            </nav>
+            <nav id="navmenu" class="navmenu" aria-label="Main navigation"><ul id="site-menu"><li><a href="index.html">Home</a></li><li><a href="about.html">About</a></li><li><a href="portfolio.html">Portfolio</a></li><li><a href="resume.html">Resume</a></li><li><a href="services.html">Services</a></li><li class="dropdown"><button type="button" class="menu-disclosure" aria-expanded="false" aria-controls="submenu-1">Dropdown<svg class="bi bi-chevron-down" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708"></path>
+                        </svg></button>
+<ul id="submenu-1">
+                            <li><a href="#">Dropdown 1</a></li>
+                            <li class="dropdown"><button type="button" class="menu-disclosure" aria-expanded="false" aria-controls="submenu-2">Deep Dropdown<svg class="bi bi-chevron-down" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708"></path>
+                                </svg></button>
+<ul id="submenu-2">
+                                    <li><a href="#">Deep Dropdown 1</a></li>
+                                    <li><a href="#">Deep Dropdown 2</a></li>
+                                    <li><a href="#">Deep Dropdown 3</a></li>
+                                    <li><a href="#">Deep Dropdown 4</a></li>
+                                    <li><a href="#">Deep Dropdown 5</a></li>
+                                </ul>
+                            </li>
+                            <li><a href="#">Dropdown 2</a></li>
+                            <li><a href="#">Dropdown 3</a></li>
+                            <li><a href="#">Dropdown 4</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="contact.html" class="active" aria-current="page">Contact</a></li></ul><button type="button" class="site-menu-toggle" aria-label="Open navigation" aria-expanded="false" aria-controls="site-menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path class="menu-lines" d="M3 6h18M3 12h18M3 18h18"/><path class="menu-close" style="display:none" d="m6 6 12 12M18 6 6 18"/></svg></button></nav>
         </div>
     </header>
     <main class="main">
@@ -122,6 +195,46 @@
     <script src="assets/js/main.js"></script>
     <script src="assets/js/before-after.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.umd.js"></script>
+<script>
+(() => {
+ const nav=document.getElementById('navmenu');
+ const toggle=nav.querySelector('.site-menu-toggle');
+ const panel=nav.querySelector(':scope > ul');
+ const background=[...document.querySelectorAll('main,footer,#header .logo')];
+ const previousInert=new Map();
+ panel.inert=true;
+ const close=(restoreFocus=false)=>{
+  document.body.classList.remove('site-menu-open','mobile-nav-active');
+  panel.inert=true;
+  background.forEach(el=>{el.inert=previousInert.get(el) ?? el.inert;});previousInert.clear();
+  toggle.setAttribute('aria-expanded','false');toggle.setAttribute('aria-label','Open navigation');
+  toggle.querySelector('.menu-lines').style.display='';toggle.querySelector('.menu-close').style.display='none';
+  if(restoreFocus)toggle.focus();
+ };
+ toggle.addEventListener('click',()=>{
+  if(document.body.classList.contains('site-menu-open')){close(true);return;}
+  background.forEach(el=>{previousInert.set(el,el.inert);el.inert=true;});
+  panel.inert=false;document.body.classList.add('site-menu-open');
+  toggle.setAttribute('aria-expanded','true');toggle.setAttribute('aria-label','Close navigation');
+  toggle.querySelector('.menu-lines').style.display='none';toggle.querySelector('.menu-close').style.display='';
+ });
+ nav.querySelectorAll('.menu-disclosure').forEach(button=>button.addEventListener('click',()=>{
+  const open=button.getAttribute('aria-expanded')!=='true';
+  button.setAttribute('aria-expanded',String(open));button.parentElement.classList.toggle('menu-expanded',open);
+ }));
+ nav.querySelectorAll('a').forEach(link=>link.addEventListener('click',()=>{if(link.getAttribute('href')!=='#')close();}));
+ document.addEventListener('keydown',event=>{
+  if(!document.body.classList.contains('site-menu-open'))return;
+  if(event.key==='Escape'){close(true);return;}
+  if(event.key==='Tab'){
+   const focusable=[...panel.querySelectorAll('a[href],button'),toggle].filter(el=>el.getClientRects().length);
+   const first=focusable[0],last=focusable[focusable.length-1];
+   if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus();}
+   else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus();}
+  }
+ });
+})();
+</script>
 </body>
 
 </html>
