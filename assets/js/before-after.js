@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
   const container = document.querySelector(".before-after");
+  if (!container) return;
   const slider = container.querySelector(".comparison-slider");
   const handle = container.querySelector(".comparison-handle");
   const afterImage = container.querySelector(".comparison-after");
