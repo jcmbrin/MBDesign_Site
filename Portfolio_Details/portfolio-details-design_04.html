@@ -28,26 +28,155 @@
     <link rel="stylesheet" href="../assets/css/main.css">
     <link rel="stylesheet" href="../assets/css/before-after.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.css">
+<style id="bootstrap-menu-styles">
+#header { z-index:10000; background:#242628; }
+.menu-icon-button {
+ box-sizing:border-box; display:grid; place-items:center; flex:0 0 48px;
+ width:48px; height:48px; min-width:48px; min-height:48px; padding:11px;
+ border:1px solid #ffffff26; border-radius:10px; background:#292b2d;
+ color:#f5f5f5; cursor:pointer;
+}
+.menu-icon-button svg,.submenu-button svg {
+ display:block; width:24px; height:24px; fill:none; stroke:currentColor;
+ stroke-width:2; stroke-linecap:round; stroke-linejoin:round;
+}
+#fullscreenMenu {
+ position:fixed; inset:0; width:100%; height:100vh; height:100dvh;
+ border:0; background:#202224; color:#f1f1f1; z-index:20000;
+ transform:none !important; opacity:0; transition:opacity .28s ease;
+}
+#fullscreenMenu.show,#fullscreenMenu.showing { opacity:1; }
+#fullscreenMenu.hiding { opacity:0; }
+#menuClose { position:fixed; top:var(--menu-button-top,20px); left:var(--menu-button-left,calc(100vw - 72px)); z-index:1; }
+#fullscreenMenu .offcanvas-body {
+ box-sizing:border-box;
+ padding:max(100px,calc(env(safe-area-inset-top) + 80px)) max(24px,env(safe-area-inset-right)) max(32px,env(safe-area-inset-bottom)) max(24px,env(safe-area-inset-left));
+ overflow-y:auto; overscroll-behavior:contain; scrollbar-gutter:stable;
+}
+.fullscreen-links { width:100%; max-width:900px; margin:0 auto; }
+.fullscreen-links ul { list-style:none; margin:0; padding:0; }
+.fullscreen-links a,.fullscreen-links .submenu-button {
+ box-sizing:border-box; display:flex; align-items:center; width:100%;
+ min-height:52px; padding:14px 18px; border:0; background:transparent !important;
+ color:#f1f1f1; font-family:Arial,Helvetica,sans-serif;
+ font-size:clamp(18px,2.2vw,26px); font-weight:500; line-height:1.35;
+ text-decoration:none !important; transition:color .18s ease;
+}
+.fullscreen-links a:hover,.fullscreen-links a[aria-current="page"],.fullscreen-links .submenu-button:hover { color:#d7e517; }
+.submenu-button { justify-content:space-between; gap:16px; text-align:left; cursor:pointer; }
+.submenu-button svg { flex-shrink:0; transition:transform .25s ease; }
+.submenu-button[aria-expanded="true"] svg { transform:rotate(180deg); }
+.fullscreen-links .submenu-links { margin:6px 0 12px 18px; padding-left:12px; border-left:1px solid #505458; }
+.submenu-links a,.submenu-links .submenu-button { font-size:clamp(16px,1.8vw,20px); }
+.menu-icon-button:focus-visible,.fullscreen-links :is(a,button):focus-visible { outline:2px solid #d7e517; outline-offset:-2px; }
+@media(max-width:480px) {
+ #fullscreenMenu .offcanvas-body { padding-left:16px; padding-right:16px; }
+ .fullscreen-links a,.fullscreen-links .submenu-button { padding:12px 14px; }
+}
+@media(prefers-reduced-motion:reduce) { #fullscreenMenu,.fullscreen-links a,.submenu-button svg { transition:none; } }
+
+/* Frosted dark header while scrolling. */
+#header {
+  background: #242628 !important;
+  border-bottom: 1px solid transparent;
+  transition: background-color .25s ease, border-color .25s ease, box-shadow .25s ease;
+}
+#header.header-glass {
+  background: rgba(36, 38, 40, .72) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(120%);
+  backdrop-filter: blur(16px) saturate(120%);
+  border-bottom-color: rgba(255, 255, 255, .09);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, .12);
+}
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  #header.header-glass { background: rgba(36, 38, 40, .94) !important; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #header { transition: none; }
+}
+
+/* Preserve page geometry during the menu fade. */
+html { scrollbar-gutter: stable; }
+html.menu-scroll-locked { overflow: hidden !important; }
+.offcanvas-backdrop { z-index: 19990; background: transparent; }
+.offcanvas-backdrop.show { opacity: 0; }
+html.menu-scroll-locked #menuOpen { visibility: hidden; }
+
+/* Center the menu group horizontally and vertically. */
+#fullscreenMenu .offcanvas-body {
+  display: flex;
+  flex-direction: column;
+  padding-top: max(88px, calc(env(safe-area-inset-top) + 64px));
+  padding-bottom: max(88px, calc(env(safe-area-inset-bottom) + 64px));
+}
+#fullscreenMenu .fullscreen-links {
+  flex: 0 0 auto;
+  margin: auto;
+  text-align: center;
+}
+#fullscreenMenu .fullscreen-links a,
+#fullscreenMenu .fullscreen-links .submenu-button {
+  justify-content: center;
+  text-align: center;
+}
+#fullscreenMenu .submenu-button { position: relative; }
+#fullscreenMenu .submenu-button svg {
+  position: absolute;
+  right: 18px;
+}
+#fullscreenMenu .fullscreen-links .submenu-links {
+  margin: 6px 0 12px;
+  padding-left: 0;
+  border-left: 0;
+}
+
+/* Yellow text and an underline that expands from the center. */
+#fullscreenMenu { --menu-accent: #d7e517; }
+#fullscreenMenu .menu-label { position: relative; display: inline-block; }
+#fullscreenMenu .menu-label::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -5px;
+  height: 2px;
+  background: var(--menu-accent);
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform .25s ease-in-out;
+  pointer-events: none;
+}
+#fullscreenMenu .fullscreen-links a:hover,
+#fullscreenMenu .fullscreen-links a:focus-visible,
+#fullscreenMenu .fullscreen-links a[aria-current="page"],
+#fullscreenMenu .fullscreen-links .submenu-button:hover,
+#fullscreenMenu .fullscreen-links .submenu-button:focus-visible {
+  color: var(--menu-accent);
+}
+#fullscreenMenu .fullscreen-links :is(a,button):hover > .menu-label::after,
+#fullscreenMenu .fullscreen-links :is(a,button):focus-visible > .menu-label::after {
+  transform: scaleX(1);
+}
+@media (prefers-reduced-motion: reduce) {
+  #fullscreenMenu .menu-label::after { transition: none; }
+}
+</style>
 </head>
 
 <body class="portfolio-details-page">
-    <header class="d-flex align-items-center header fixed-top" id="header" style="filter: blur(0px);">
-        <div class="container-fluid position-relative d-flex justify-content-between align-items-center container-xl" style="filter: blur(0px);"><a class="d-flex align-items-center logo" href="../index.html">
-                <h1 class="sitename">Personal</h1>
+    <header class="d-flex align-items-center header fixed-top" id="header" >
+        <div class="container-fluid position-relative d-flex justify-content-between align-items-center container-xl"><a class="d-flex align-items-center logo" href="../index.html"><img class="img-fluid ms-0 ps-0 me-0 pe-0" width="150" height="150" src="../assets/img/mb_brand_logo_white.svg" style="width: 46px;">
+                <h1 class="sitename">MB Design</h1>
             </a>
-            <nav id="navmenu" class="navmenu">
-                <ul>
-                    <li><a href="../index.html">Home</a></li>
-                    <li><a href="../about.html">About</a></li>
-                    <li><a href="../portfolio.html">Portfolio</a></li>
-                    <li><a href="../resume.html">Resume</a></li>
-                    <li><a href="../contact.html">Contact</a></li>
-                </ul><svg class="bi bi-list d-xl-none mobile-nav-toggle" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 16 16">
-                    <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5"></path>
-                </svg>
-            </nav>
+            <nav id="navmenu" aria-label="Open navigation"><button id="menuOpen" class="menu-icon-button" type="button" data-bs-toggle="offcanvas" data-bs-target="#fullscreenMenu" aria-controls="fullscreenMenu" aria-expanded="false" aria-label="Open navigation"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"></path></svg></button></nav>
         </div>
     </header>
+<div class="offcanvas offcanvas-top" id="fullscreenMenu" tabindex="-1" aria-labelledby="menuTitle" data-bs-backdrop="true" data-bs-scroll="true">
+<h2 id="menuTitle" class="visually-hidden">Navigation</h2>
+<button id="menuClose" class="menu-icon-button" type="button" data-bs-dismiss="offcanvas" aria-label="Close navigation"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+<div class="offcanvas-body"><nav class="fullscreen-links" aria-label="Main navigation"><ul><li><a href="../index.html"><span class="menu-label">Home</span></a></li><li><a href="../about.html"><span class="menu-label">About</span></a></li><li><a href="../portfolio.html" class="active" aria-current="page"><span class="menu-label">Portfolio</span></a></li><li><a href="../resume.html"><span class="menu-label">Resume</span></a></li><li><a href="../contact.html"><span class="menu-label">Contact</span></a></li></ul></nav></div></div>
+
+    
     <main class="main">
         <div data-aos="fade" class="page-title">
             <div class="container mt-7">
@@ -135,6 +264,54 @@
     <script src="../assets/js/main.js"></script>
     <script src="../assets/js/before-after.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.umd.js"></script>
+<script>
+(() => {
+ const menu=document.getElementById('fullscreenMenu');
+ const openButton=document.getElementById('menuOpen');
+ const root=document.documentElement;
+ function alignCloseButton(){
+  const bounds=openButton.getBoundingClientRect();
+  menu.style.setProperty('--menu-button-top',bounds.top+'px');
+  menu.style.setProperty('--menu-button-left',bounds.left+'px');
+ }
+ menu.addEventListener('show.bs.offcanvas',()=>{
+  // Measure before scroll locking; keep these coordinates for the fade.
+  alignCloseButton();
+  root.classList.add('menu-scroll-locked');
+  openButton.setAttribute('aria-expanded','true');
+ });
+ menu.addEventListener('hidden.bs.offcanvas',()=>{
+  root.classList.remove('menu-scroll-locked');
+  openButton.setAttribute('aria-expanded','false');
+ });
+ window.addEventListener('resize',()=>{
+  if(menu.classList.contains('show')||menu.classList.contains('showing'))alignCloseButton();
+ });
+ const current='portfolio.html';
+ menu.querySelectorAll('a[href]').forEach(link=>{
+  link.removeAttribute('aria-current');link.classList.remove('active');
+  if(link.getAttribute('href').split('/').pop()===current)link.setAttribute('aria-current','location');
+ });
+})();
+</script>
+<script>
+(() => {
+  const header = document.getElementById('header');
+  let pending = false;
+  const update = () => {
+    header.classList.toggle('header-glass', window.scrollY > 20);
+    pending = false;
+  };
+  window.addEventListener('scroll', () => {
+    if (!pending) {
+      pending = true;
+      requestAnimationFrame(update);
+    }
+  }, { passive: true });
+  window.addEventListener('pageshow', update);
+  update();
+})();
+</script>
 </body>
 
 </html>
